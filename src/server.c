@@ -11,10 +11,10 @@ int server_init(Server *server, int port)
     return 0;
   }
   printf("Socket created successfully with the file descriptor: %d\n", server_socket);
+  server->server_fd = server_socket;
   // close(server_socket);
 
-  printf("%s", "Server initialized on port: \n");
-  printf("%i", 8080);
+  printf("Server initialized on port: %d\n", server->port);
   return 0;
 }
 
