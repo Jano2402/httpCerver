@@ -3,7 +3,7 @@
 
 typedef struct Server {
   int port;
-  int server_fd;
+  int socket_fd;
 } Server;
 
 int server_init(Server *server, int port);
