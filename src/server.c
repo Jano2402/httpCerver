@@ -82,6 +82,21 @@ int server_start(Server *server)
     return -1;
   }
 
+  ssize_t n = recv(client_fd, buffer, sizeof(buffer), 0);
+
+  if(n == -1)
+  {
+    perror("recv");
+    return -1;
+  } else if (n == 0) {
+    printf("The client closed the connection\n");
+    return 0;
+  }
+
+  buffer[n] = '\0';
+
+  printf("The recieved message was: %s\n", buffer);
+
   return 0;
 }
 
