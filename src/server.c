@@ -31,6 +31,7 @@ int server_init(Server *server, int port)
 int server_start(Server *server) 
 {
   struct sockaddr_in addr, peer_addr;
+  char buffer[256];
 
   memset(&addr, 0, sizeof(addr));
 
@@ -73,6 +74,13 @@ int server_start(Server *server)
   inet_ntop(AF_INET, &s->sin_addr, ip, sizeof(ip));
   printf("%s:%d\n", ip, ntohs(s->sin_port));
   printf("Family: %s\n", peer_addr.sin_family == AF_INET ? "IPv4" : "IPv6");
+
+  strcpy(buffer, "This message was sent from the server \n");
+  if (send(client_fd, buffer, strlen(buffer), 0) == -1)
+  {
+    perror("send");
+    return -1;
+  }
 
   return 0;
 }
