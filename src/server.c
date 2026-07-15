@@ -30,7 +30,7 @@ int server_init(Server *server, int port)
 
 int server_start(Server *server) 
 {
-  struct sockaddr_in addr;
+  struct sockaddr_in addr, peer_addr;
 
   memset(&addr, 0, sizeof(addr));
 
@@ -38,7 +38,7 @@ int server_start(Server *server)
   addr.sin_port = htons(server->port);
   addr.sin_addr.s_addr = INADDR_ANY;
 
-  if(bind(server->socket_fd, (struct sockaddr *)&addr, sizeof(addr)) == -1)
+  if(bind(server->socket_fd, (struct sockaddr *) &addr, sizeof(addr)) == -1)
   {
     perror("bind");
     return -1;
@@ -53,6 +53,19 @@ int server_start(Server *server)
   }
 
   printf("Server listening on: %d\n", server->socket_fd);
+
+  socklen_t peer_addr_size = sizeof(peer_addr); 
+  memset(&peer_addr, 0, peer_addr_size);
+
+  int client_fd = accept(server->socket_fd, (struct sockaddr *) &peer_addr, &peer_addr_size); 
+
+  if (client_fd == -1)
+  {
+    perror("accept");
+    return -1;
+  }
+
+  printf("Client connected on file descriptor: %d\n", client_fd);
 
   return 0;
 }
