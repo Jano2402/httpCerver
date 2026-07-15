@@ -34,7 +34,6 @@ int server_start(Server *server)
   char buffer[256];
 
   memset(&addr, 0, sizeof(addr));
-
   addr.sin_family = AF_INET;
   addr.sin_port = htons(server->port);
   addr.sin_addr.s_addr = INADDR_ANY;
@@ -44,7 +43,6 @@ int server_start(Server *server)
     perror("bind");
     return -1;
   }
-
   printf("Bind realizado correctamente \n");
 
   if(listen(server->socket_fd, LISTEN_BACKLOG) == -1)
@@ -52,14 +50,12 @@ int server_start(Server *server)
     perror("listen");
     return -1;
   }
-
   printf("Server listening on: %d\n", server->socket_fd);
 
   socklen_t peer_addr_size = sizeof(peer_addr); 
   memset(&peer_addr, 0, peer_addr_size);
 
   int client_fd = accept(server->socket_fd, (struct sockaddr *) &peer_addr, &peer_addr_size); 
-
   if (client_fd == -1)
   {
     perror("accept");
@@ -67,7 +63,6 @@ int server_start(Server *server)
   }
 
   printf("Client connected on file descriptor: %d\n", client_fd);
-
   printf("The connection entered from: ");
   char ip[INET6_ADDRSTRLEN];
   struct sockaddr_in *s = (struct sockaddr_in *) &peer_addr;
@@ -82,20 +77,25 @@ int server_start(Server *server)
     return -1;
   }
 
-  ssize_t n = recv(client_fd, buffer, sizeof(buffer), 0);
-
-  if(n == -1)
+  while (1)
   {
-    perror("recv");
-    return -1;
-  } else if (n == 0) {
-    printf("The client closed the connection\n");
-    return 0;
+    ssize_t n = recv(client_fd, buffer, sizeof(buffer), 0);
+    if(n == -1)
+    {
+      perror("recv");
+      return -1;
+    } else if (n == 0) {
+      printf("The client closed the connection\n");
+      return 0;
+    }
+    buffer[n] = '\0';
+    printf("Client said: %s\n", buffer);
+    if (send(client_fd, buffer, strlen(buffer), 0) == -1)
+    {
+      perror("send");
+      return -1;
+    }
   }
-
-  buffer[n] = '\0';
-
-  printf("The recieved message was: %s\n", buffer);
 
   return 0;
 }
