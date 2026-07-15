@@ -67,6 +67,13 @@ int server_start(Server *server)
 
   printf("Client connected on file descriptor: %d\n", client_fd);
 
+  printf("The connection entered from: ");
+  char ip[INET6_ADDRSTRLEN];
+  struct sockaddr_in *s = (struct sockaddr_in *) &peer_addr;
+  inet_ntop(AF_INET, &s->sin_addr, ip, sizeof(ip));
+  printf("%s:%d\n", ip, ntohs(s->sin_port));
+  printf("Family: %s\n", peer_addr.sin_family == AF_INET ? "IPv4" : "IPv6");
+
   return 0;
 }
 
