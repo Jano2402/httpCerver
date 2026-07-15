@@ -9,6 +9,6 @@ int main(void) {
     return 1;
 
   server_destroy(&server);
-  
+ 
   return 0;
 }

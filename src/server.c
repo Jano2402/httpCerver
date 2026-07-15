@@ -8,6 +8,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#define LISTEN_BACKLOG 50
+
 int server_init(Server *server, int port) 
 {
   server->port = port;
@@ -43,6 +45,14 @@ int server_start(Server *server)
   }
 
   printf("Bind realizado correctamente \n");
+
+  if(listen(server->socket_fd, LISTEN_BACKLOG) == -1)
+  {
+    perror("listen");
+    return -1;
+  }
+
+  printf("Server listening on: %d\n", server->socket_fd);
 
   return 0;
 }
