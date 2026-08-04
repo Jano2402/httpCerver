@@ -10,7 +10,7 @@
 
 #define LISTEN_BACKLOG 50
 
-int server_init(Server *server, int port) 
+int server_init(Server *server, int port)
 {
   server->port = port;
   int server_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -28,7 +28,7 @@ int server_init(Server *server, int port)
   return 0;
 }
 
-int server_start(Server *server) 
+int server_start(Server *server)
 {
   struct sockaddr_in addr, peer_addr;
   char buffer[256];
@@ -52,10 +52,10 @@ int server_start(Server *server)
   }
   printf("Server listening on: %d\n", server->socket_fd);
 
-  socklen_t peer_addr_size = sizeof(peer_addr); 
+  socklen_t peer_addr_size = sizeof(peer_addr);
   memset(&peer_addr, 0, peer_addr_size);
 
-  int client_fd = accept(server->socket_fd, (struct sockaddr *) &peer_addr, &peer_addr_size); 
+  int client_fd = accept(server->socket_fd, (struct sockaddr *) &peer_addr, &peer_addr_size);
   if (client_fd == -1)
   {
     perror("accept");
@@ -97,15 +97,17 @@ int server_start(Server *server)
     }
   }
 
+  // Next step could be handling multiple clients at the same time.
+
   return 0;
 }
 
-void server_destroy(Server *server) 
+void server_destroy(Server *server)
 {
   int port = server->port;
   close(server->socket_fd);
   printf("%s ", "Server on");
   printf("%i ", port);
   printf("%s", "was destroyed.\n");
-  return; 
+  return;
 }
