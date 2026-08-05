@@ -1,6 +1,10 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include <stdint.h>
+#include <time.h>
+#include <netinet/in.h>
+
 typedef struct Server {
   int port;
   int socket_fd;
